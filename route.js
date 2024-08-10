@@ -101,6 +101,26 @@ By following these guidelines, you will ensure that customers receive the best p
 
 // }
 
+// Function to detect language
+async function detectLanguage(text) {
+   const response = await openai.Completion.create({
+       model: "text-davinci-003",
+       prompt: `Detect the language of the following text: "${text}"`,
+       max_tokens: 10
+   });
+   return response.choices[0].text.trim();
+}
+
+// Function to generate response in detected language
+async function generateResponse(userInput, language) {
+   const response = await openai.Completion.create({
+       model: "text-davinci-003",
+       prompt: `${systemPrompt}\n\nUser: ${userInput}\nAI (in ${language}):`,
+       max_tokens: 150
+   });
+   return response.choices[0].text.trim();
+}
+
 export async function POST(req) {
     const openai = new OpenAI();
     const data = await req.json();
